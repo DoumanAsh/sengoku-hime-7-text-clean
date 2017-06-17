@@ -20,6 +20,20 @@ pub fn is_jp<T: AsRef<str>>(text: T) -> bool {
     })
 }
 
+pub fn extract_dialogue(text: &str) -> Option<String> {
+    const BEGIN: &'static[char] = &['「', '（'];
+    const END: &'static[char] = &['」', '）'];
+    if let (Some(begin_pos), Some(end_pos)) = (text.find(BEGIN), text.find(END)) {
+        let end_pos = end_pos + 3; //+3 to go at the symbol of dialogue end
+        if end_pos == text.len() { return None; }
+
+        Some(text[begin_pos..end_pos].to_string())
+    }
+    else {
+        None
+    }
+}
+
 pub fn remove_text_reps(text: String) -> String {
     let chars = text.chars().collect::<Vec<_>>();
     let mut pred = Vec::new();

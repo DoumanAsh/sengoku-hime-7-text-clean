@@ -43,12 +43,40 @@ fn remove_color(text: &str) -> Option<String> {
 }
 
 ///Processes text and returns changed text or None.
-fn process_text(text: &str) -> Option<String>{
-    if utils::is_jp(text) {
-        remove_color(text).map(|text| utils::remove_text_reps(text).replace("\n", ""))
+fn process_text(text: String) -> Option<String>{
+    if utils::is_jp(&text) {
+        let text = utils::extract_dialogue(&text).unwrap_or(text);
+        remove_color(&text).map(|text| utils::remove_text_reps(text).replace("\n", ""))
     }
     else {
         None
+    }
+}
+
+fn open_clipboard() -> Clipboard {
+    loop {
+        match Clipboard::new() {
+            Ok(clipboard) => return clipboard,
+            Err(error) => error_println!("Failed to open clipboard. Error: {}", error)
+        }
+    }
+}
+
+fn get_clipboard_string(clip: &Clipboard) -> String {
+    loop {
+        match clip.get_string() {
+            Ok(content) => return content,
+            Err(error) => error_println!("Failed to get content from Clipboard. Error: {}", error)
+        }
+    }
+}
+
+fn set_clipboard_string(clip: &Clipboard, content: &str) {
+    loop {
+        match clip.set_string(content) {
+            Ok(_) => break,
+            Err(error) => error_println!("Failed to set content onto Clipboard. Error: {}", error)
+        }
     }
 }
 
@@ -59,24 +87,11 @@ fn ok_callback() -> CallbackResult {
         return RES;
     }
 
-    match Clipboard::new() {
-        Ok(clip) => {
-            match clip.get_string() {
-                Ok(content) => {
-                    if let Some(new_text) = process_text(&content) {
-                        if let Err(error) = clip.set_string(&new_text) {
-                            error_println!("Failed to set clipboard content. Error: {}", error);
-                        }
-                    }
-                }
-                Err(error) => {
-                    error_println!("Failed to get clipboard content. Error: {}", error);
-                }
-            }
-        }
-        Err(error) => {
-            error_println!("Failed to open clipboard. Error: {}", error);
-        }
+    let clip = open_clipboard();
+    let content = get_clipboard_string(&clip);
+
+    if let Some(new_text) = process_text(content) {
+        set_clipboard_string(&clip, &new_text)
     }
 
     RES
