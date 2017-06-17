@@ -1,0 +1,14 @@
+[package]
+publish = false
+name = "sengoku-hime-7-text-clean"
+version = "0.1.0"
+authors = ["Douman <douman@gmx.se>"]
+
+[dependencies]
+lazy_static = "*"
+regex = "*"
+clipboard-win = "*"
+clipboard-master = "*"
+
+[profile.release]
+lto = true
