@@ -73,7 +73,8 @@ fn remove_color(text: &str) -> Option<String> {
 ///Processes text and returns changed text or None.
 pub fn process_text(text: String) -> Option<String>{
     if is_jp(&text) {
-        let text = extract_dialogue(&text).unwrap_or(text);
+        let text = text.trim();
+        let text = extract_dialogue(text).unwrap_or(text.to_string());
         remove_color(&text).map(|text| remove_text_reps(text).replace("\n", ""))
     }
     else {
