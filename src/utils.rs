@@ -1,3 +1,5 @@
+use ::regex;
+
 #[macro_export]
 macro_rules! error_println {
     ($($tt:tt)*) => {{
@@ -51,6 +53,32 @@ pub fn remove_text_reps(text: String) -> String {
     }
 
     text
+}
+
+fn remove_color(text: &str) -> Option<String> {
+    lazy_static! {
+        static ref RE_TAG: regex::Regex = regex::Regex::new("<[^>]+>").unwrap();
+    }
+
+    let result = RE_TAG.replace_all(text, "");
+
+    if result.len() != text.len() {
+        Some(result.to_string())
+    }
+    else {
+        None
+    }
+}
+
+///Processes text and returns changed text or None.
+pub fn process_text(text: String) -> Option<String>{
+    if is_jp(&text) {
+        let text = extract_dialogue(&text).unwrap_or(text);
+        remove_color(&text).map(|text| remove_text_reps(text).replace("\n", ""))
+    }
+    else {
+        None
+    }
 }
 
 #[cfg(test)]

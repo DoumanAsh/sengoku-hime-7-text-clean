@@ -27,32 +27,6 @@ fn error_callback(error: io::Error) -> CallbackResult {
     CallbackResult::Next
 }
 
-fn remove_color(text: &str) -> Option<String> {
-    lazy_static! {
-        static ref RE_TAG: regex::Regex = regex::Regex::new("<[^>]+>").unwrap();
-    }
-
-    let result = RE_TAG.replace_all(text, "");
-
-    if result.len() != text.len() {
-        Some(result.to_string())
-    }
-    else {
-        None
-    }
-}
-
-///Processes text and returns changed text or None.
-fn process_text(text: String) -> Option<String>{
-    if utils::is_jp(&text) {
-        let text = utils::extract_dialogue(&text).unwrap_or(text);
-        remove_color(&text).map(|text| utils::remove_text_reps(text).replace("\n", ""))
-    }
-    else {
-        None
-    }
-}
-
 fn open_clipboard() -> Clipboard {
     loop {
         match Clipboard::new() {
@@ -90,7 +64,7 @@ fn ok_callback() -> CallbackResult {
     let clip = open_clipboard();
     let content = get_clipboard_string(&clip);
 
-    if let Some(new_text) = process_text(content) {
+    if let Some(new_text) = utils::process_text(content) {
         set_clipboard_string(&clip, &new_text)
     }
 

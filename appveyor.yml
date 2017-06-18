@@ -23,18 +23,20 @@ test_script:
 
 before_deploy:
   # Generate artifacts for release
-  - rm -re target/
+  - ps: Remove-Item -re target/
   - cargo build
   - cargo build --release
   - mkdir staging
   - copy target\release\*.exe staging
+  - copy target\release\*.dll staging
   - mkdir staging\debug
   - copy target\debug\*.exe staging\debug
+  - copy target\debug\*.dll staging\debug
   - cd staging
-  - 7z a ../%PROJECT_NAME%-%APPVEYOR_REPO_TAG_NAME%-%TARGET%.zip *.exe
+  - 7z a ../%PROJECT_NAME%-%APPVEYOR_REPO_TAG_NAME%-%TARGET%.zip *.exe *.dll
   - appveyor PushArtifact ../%PROJECT_NAME%-%APPVEYOR_REPO_TAG_NAME%-%TARGET%.zip
   - cd debug/
-  - 7z a ../../%PROJECT_NAME%-%APPVEYOR_REPO_TAG_NAME%-%TARGET%-debug.zip *.exe
+  - 7z a ../../%PROJECT_NAME%-%APPVEYOR_REPO_TAG_NAME%-%TARGET%-debug.zip *.exe *.dll
   - appveyor PushArtifact ../../%PROJECT_NAME%-%APPVEYOR_REPO_TAG_NAME%-%TARGET%-debug.zip
 
 deploy:
@@ -46,7 +48,7 @@ deploy:
   # - Then go to 'https://ci.appveyor.com/tools/encrypt' and enter the newly generated token.
   # - Enter the "encrypted value" below
   auth_token:
-    secure: OW1lZMRPa9dlyEe71Kl9mgmwGG2itQUG1UXkq89z9/IzzpDvT9Biqd0zq9zsb4gH
+    secure: Jn3kh7c4SMFcIjYM7rNg+JG1g6zIyLt0PIKnkTvdqVfvsBPDQsiFxc87qYtjV2PH
   provider: GitHub
   # deploy when a new tag is pushed and only on the stable channel
   on:

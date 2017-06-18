@@ -10,5 +10,7 @@ regex = "*"
 clipboard-win = "*"
 clipboard-master = "*"
 
-[profile.release]
-lto = true
+[lib]
+name = "sengoku_hime_7_text_clean"
+path = "src/dll.rs"
+crate-type = ["dylib"]
