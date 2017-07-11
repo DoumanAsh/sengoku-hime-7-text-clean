@@ -1,6 +1,10 @@
 #[macro_use]
 extern crate lazy_static;
 extern crate regex;
+extern crate windows_win;
+
+const GAME_CLASS: &'static str = "UnityWndClass";
+const GAME_TITLE: &'static str = "戦極姫７～戦雲つらぬく紅蓮の遺志～";
 
 #[macro_export]
 macro_rules! error_println {
@@ -8,6 +12,10 @@ macro_rules! error_println {
         use ::std::io::Write;
         let _ = writeln!(&mut ::std::io::stderr(), $($tt)*);
     }}
+}
+
+pub fn is_game_running() -> bool {
+    windows_win::raw::window::find(GAME_CLASS, Some(GAME_TITLE)).is_ok()
 }
 
 #[inline(always)]

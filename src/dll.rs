@@ -32,7 +32,6 @@ pub extern "C" fn TAPluginInitialize(ta_info: *const TAInfo, arg: *const c_void)
     1
 }
 
-
 type wchar_t = c_ushort;
 type size_t = usize;
 

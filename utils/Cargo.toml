@@ -7,3 +7,4 @@ publish = false
 [dependencies]
 regex = "*"
 lazy_static = "*"
+windows-win = "2"
