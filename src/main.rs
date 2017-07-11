@@ -1,16 +1,14 @@
 #![cfg(windows)]
 
-#[macro_use]
-extern crate lazy_static;
-extern crate regex;
 extern crate clipboard_master;
 extern crate clipboard_win;
+
+#[macro_use]
+extern crate utils;
 
 use std::io;
 use std::process::exit;
 
-#[macro_use]
-mod utils;
 
 use clipboard_master::{
     Master,

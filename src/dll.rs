@@ -2,14 +2,10 @@
 #![allow(bad_style)]
 #![allow(unused_variables)]
 
-#[macro_use]
-extern crate lazy_static;
-extern crate regex;
+extern crate utils;
 
 use std::mem;
 use std::ptr;
-
-mod utils;
 
 use std::os::raw::{
     c_int,

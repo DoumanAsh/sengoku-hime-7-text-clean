@@ -5,12 +5,15 @@ version = "0.1.1"
 authors = ["Douman <douman@gmx.se>"]
 
 [dependencies]
-lazy_static = "*"
-regex = "*"
 clipboard-win = "*"
 clipboard-master = "*"
+
+[dependencies.utils]
+path = "utils"
 
 [lib]
 name = "sengoku_hime_7_text_clean"
 path = "src/dll.rs"
 crate-type = ["dylib"]
+
+[workspace]
