@@ -4,7 +4,7 @@ extern crate regex;
 extern crate windows_win;
 
 const GAME_CLASS: &'static str = "UnityWndClass";
-const GAME_TITLE: &'static str = "戦極姫７～戦雲つらぬく紅蓮の遺志～";
+const GAME_TITLE: &'static str = "戦極姫７遊戯強化版・弐";
 
 #[macro_export]
 macro_rules! error_println {

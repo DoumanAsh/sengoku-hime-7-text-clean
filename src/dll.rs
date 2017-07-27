@@ -14,7 +14,7 @@ use std::os::raw::{
     c_void
 };
 
-const TA_PLUGIN_VERSION: c_uint = 0x002;
+const TA_PLUGIN_VERSION: c_uint = 0x0002;
 
 #[no_mangle]
 pub extern "C" fn TAPluginGetVersion(arg: *const c_void) -> c_uint {
