@@ -70,11 +70,6 @@ fn ok_callback() -> CallbackResult {
 }
 
 fn main() {
-    if !utils::is_game_running() {
-        println!("Sengoku Hime 7 is not running. Shutting donw...");
-        return;
-    }
-
     match Master::new(ok_callback, error_callback).run() {
         Ok(_) => (),
         Err(error) => {
