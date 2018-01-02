@@ -35,7 +35,7 @@ pub fn is_jp<T: AsRef<str>>(text: T) -> bool {
 pub fn extract_dialogue(text: &str) -> Option<String> {
     const BEGIN: &'static[char] = &['「', '（'];
     const END: &'static[char] = &['」', '）'];
-    if let (Some(begin_pos), Some(end_pos)) = (text.find(BEGIN), text.find(END)) {
+    if let (Some(begin_pos), Some(end_pos)) = (text.find(BEGIN), text.rfind(END)) {
         let end_pos = end_pos + 3; //+3 to go at the symbol of dialogue end
         if end_pos == text.len() { return None; }
 
@@ -94,9 +94,28 @@ pub fn process_text(text: String) -> Option<String>{
 
 #[cfg(test)]
 mod tests {
+    use super::{
+        extract_dialogue,
+        remove_text_reps,
+        process_text
+    };
+
+    #[test]
+    fn extract_dialogue_complex() {
+        let text = "「ゲームは大きく分けて、「更新」「軍備」「内政」「政略」「作戦」「合戦」６つのフェ<color=#ffffff42>イ</color>「ゲームは大きく分けて、「更新」「軍備」「内政」「政略」「作戦」「合戦」６つのフェイズに分<color=#ffffff68>か</color>「ゲームは大きく分けて、「更新」「軍備」「内政」「政略」「作戦」「合戦」６つのフェイズに分かれてい<color=#ffffff8e>ま</color>「ゲームは大きく分けて、「更新」「軍備」「内政」「政略」「作戦」「合戦」６つのフェイズに分かれています<color=#ffffffff>」</color>";
+
+        let expected_result = &text[..text.len() - 8];
+
+        let result = extract_dialogue(text).expect("Extract dialogue");
+        assert_eq!(result, expected_result);
+
+        let expected_result = "「ゲームは大きく分けて、「更新」「軍備」「内政」「政略」「作戦」「合戦」６つのフェイズに分かれています」";
+        let result = process_text(text.to_string()).expect("To process text");
+        assert_eq!(result, expected_result);
+    }
+
     #[test]
     fn extract_text() {
-        use super::remove_text_reps;
         let text = "この麗しき御方こそが、甲斐この麗しき御方こそが、甲斐源氏の本この麗しき御方こそが、甲斐源氏の本流たる武この麗しき御方こそが、甲斐源氏の本流たる武田家の第この麗しき御方こそが、甲斐源氏の本流たる武田家の第十九代目この麗しき御方こそが、甲斐源氏の本流たる武田家の第十九代目の当主。武この麗しき御方こそが、甲斐源氏の本流たる武田家の第十九代目の当主。武田信玄そこの麗しき御方こそが、甲斐源氏の本流たる武田家の第十九代目の当主。武田信玄その人だ。この麗しき御方こそが、甲斐源氏の本流たる武田家の第十九代目の当主。武田信玄その人だ。".to_string();
 
         let expected_result = "この麗しき御方こそが、甲斐源氏の本流たる武田家の第十九代目の当主。武田信玄その人だ。";
@@ -107,7 +126,6 @@ mod tests {
 
     #[test]
     fn extract_text2() {
-        use super::remove_text_reps;
         let text = "手元に広げられた紙面に、ゆるり手元に広げられた紙面に、ゆるりと視線を手元に広げられた紙面に、ゆるりと視線を這わせる一手元に広げられた紙面に、ゆるりと視線を這わせる一人の 佳人手元に広げられた紙面に、ゆるりと視線を這わせる一人の 佳人。蝋燭の手元に広げられた紙面に、ゆるりと視線を這わせる一人の 佳人。蝋燭の淡い光に手元に広げられた紙面に、ゆるりと視線を這わせる一人の 佳人。蝋燭の淡い光に照らされ手元に広げられた紙面に、ゆるりと視線を這わせる一人の 佳人。蝋燭の淡い光に照らされるその横手元に広げられた紙面に、ゆるりと視線を這わせる一人の 佳人。蝋燭の淡い光に照らされるその横顔を、俺手元に広げられた紙面に、ゆるりと視線を這わせる一人の 佳人。蝋燭の淡い光に照らされるその横顔を、俺は無言で 見手元に広げられた紙面に、ゆるりと視線を這わせる一人の 佳人。蝋燭の淡い光に照らされるその横顔を、俺は無言で 見守り続け手元に広げられた紙面に、ゆるりと視線を這わせる一人の 佳人。蝋燭の淡い光に照らされるその横顔を、俺は無言で 見守り続ける。";
 
         let expected_result = "手元に広げられた紙面に、ゆるりと視線を這わせる一人の 佳人。蝋燭の淡い光に照らされるその横顔を、俺は無言で 見守り続ける。";
@@ -118,7 +136,6 @@ mod tests {
 
     #[test]
     fn extract_text3() {
-        use super::remove_text_reps;
         let text = "御館様の想定通り、信濃勢は御館様の想定通り、信濃勢は徹底抗戦の御館様の想定通り、信濃勢は徹底抗戦の構えを見御館様の想定通り、信濃勢は徹底抗戦の構えを見せた。";
 
         let expected_result = "御館様の想定通り、信濃勢は徹底抗戦の構えを見せた。";
